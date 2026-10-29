@@ -1,47 +1,43 @@
 pipeline {
-agent any
+    agent any
 
-```
-environment {
-    PYTHON = 'C:\\Users\\siree\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe'
-}
+    environment {
+        PYTHON = 'C:\\Users\\siree\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe'
+    }
 
-stages {
-    stage('Checkout') {
-        steps {
-            echo 'Checking out Project Tool V1'
-            checkout scm
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out Project Tool V1'
+                checkout scm
+            }
+        }
+
+        stage('Check Python') {
+            steps {
+                bat '"%PYTHON%" --version'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                bat '"%PYTHON%" -m pip install -r requirements.txt'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                bat '"%PYTHON%" -m pytest -v'
+            }
         }
     }
 
-    stage('Check Python') {
-        steps {
-            bat '"%PYTHON%" --version'
+    post {
+        success {
+            echo 'V1 pipeline completed successfully!'
+        }
+        failure {
+            echo 'V1 pipeline failed. Check the console output.'
         }
     }
-
-    stage('Install Dependencies') {
-        steps {
-            bat '"%PYTHON%" -m pip install -r requirements.txt'
-        }
-    }
-
-    stage('Run Tests') {
-        steps {
-            bat '"%PYTHON%" -m pytest -v'
-        }
-    }
-}
-
-post {
-    success {
-        echo 'V1 pipeline completed successfully!'
-    }
-
-    failure {
-        echo 'V1 pipeline failed. Check the console output.'
-    }
-}
-```
-
 }
