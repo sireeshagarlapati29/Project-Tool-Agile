@@ -8,7 +8,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                echo 'Checking out Project Tool V2'
+                echo 'Checking out Project Tool V3'
                 checkout scm
             }
         }
@@ -34,10 +34,10 @@ pipeline {
 
     post {
         success {
-            echo 'V2 pipeline completed successfully!'
+            echo 'V3 pipeline completed successfully!'
         }
         failure {
-            echo 'V2 pipeline failed. Check the console output.'
+            echo 'V3 pipeline failed. Check the console output.'
         }
     }
 }

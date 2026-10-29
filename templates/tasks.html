@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Project Tool Agile - V3 View Tasks</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+    <div class="container">
+
+        <header>
+            <h1>Project Tool Agile</h1>
+            <p>Version 3 — View Tasks</p>
+        </header>
+
+        <section class="projects-section">
+            <h2>All Assigned Tasks</h2>
+
+            {% if tasks %}
+
+            {% for task in tasks %}
+
+            <div class="project-card">
+
+                <h3>{{ task.title }}</h3>
+
+                <p>
+                    <strong>Task ID:</strong>
+                    {{ task.id }}
+                </p>
+
+                <p>
+                    <strong>Description:</strong>
+                    {{ task.description }}
+                </p>
+
+                <p>
+                    <strong>Assigned To:</strong>
+                    {{ task.assigned_to }}
+                </p>
+
+                <p>
+                    <strong>Project:</strong>
+                    {{ task.project_name }}
+                </p>
+
+            </div>
+
+            {% endfor %}
+
+            {% else %}
+
+            <p class="empty-message">
+                No tasks assigned yet. Create a project and assign a task first.
+            </p>
+
+            {% endif %}
+        </section>
+
+        <footer>
+            <p>Project Tool Agile | V3</p>
+            <a href="{{ url_for('home') }}">Back to Home</a>
+        </footer>
+
+    </div>
+
+</body>
+
+</html>

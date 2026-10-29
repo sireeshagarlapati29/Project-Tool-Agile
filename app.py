@@ -5,6 +5,7 @@ app = Flask(__name__)
 app.secret_key = "project-tool-agile-v1-secret"
 
 
+# V1 and V2: Home page displaying projects and assigned tasks
 @app.route("/")
 def home():
     projects = session.get("projects", [])
@@ -17,6 +18,7 @@ def home():
     )
 
 
+# V1: Create Project
 @app.route("/create-project", methods=["POST"])
 def create_project():
     name = request.form.get("name", "").strip()
@@ -59,8 +61,10 @@ def assign_task():
     projects = session.get("projects", [])
 
     selected_project = next(
-        (project for project in projects
-         if str(project["id"]) == project_id),
+        (
+            project for project in projects
+            if str(project["id"]) == project_id
+        ),
         None
     )
 
@@ -86,6 +90,15 @@ def assign_task():
 
     return redirect(url_for("home"))
 
+# V3: View Tasks / Show Tasks
+@app.route("/view-tasks")
+def view_tasks():
+    tasks = session.get("tasks", [])
+
+    return render_template(
+        "tasks.html",
+        tasks=tasks
+    )
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
