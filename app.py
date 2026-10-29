@@ -1,46 +1,39 @@
-from datetime import datetime
-from flask import Flask, flash, redirect, render_template, request, url_for
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 
 app = Flask(__name__)
-# Secret key used for session-based flash messaging
-app.secret_key = "agile-project-tool-secret-key"
-
-# In-memory storage for projects created during the current application session
-projects = []
-
+app.secret_key = "project-tool-agile-v1-secret"
 
 @app.route("/")
-def index():
-    """Renders the main page displaying the project creation form and current session projects."""
+def home():
+    projects = session.get("projects", [])
     return render_template("index.html", projects=projects)
 
 
 @app.route("/create-project", methods=["POST"])
 def create_project():
-    """Handles the creation of a new project with field validation."""
     name = request.form.get("name", "").strip()
     description = request.form.get("description", "").strip()
     owner = request.form.get("owner", "").strip()
 
-    # Validation: Ensure all fields are filled
     if not name or not description or not owner:
-        flash("All fields (Project Name, Description, and Owner) are required.", "error")
-        return redirect(url_for("index"))
+        flash("Please fill in all the fields.", "error")
+        return redirect(url_for("home"))
 
-    # Create new project record
-    new_project = {
+    projects = session.get("projects", [])
+
+    project = {
         "id": len(projects) + 1,
         "name": name,
         "description": description,
-        "owner": owner,
-        "created_at": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "owner": owner
     }
-    projects.append(new_project)
+
+    projects.append(project)
+    session["projects"] = projects
 
     flash(f"Project '{name}' was created successfully!", "success")
-    return redirect(url_for("index"))
+    return redirect(url_for("home"))
 
 
 if __name__ == "__main__":
-    # Run the application locally on port 5000 as required
     app.run(host="0.0.0.0", port=5000, debug=True)

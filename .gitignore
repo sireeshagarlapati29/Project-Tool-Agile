@@ -1,16 +1,6 @@
-# Byte-compiled / optimized / DLL files
 __pycache__/
-*.py[cod]
-*$py.class
-
-# Pytest cache
 .pytest_cache/
-
-# Virtual environment
-venv/
-env/
 .venv/
-
-# IDE files
-.vscode/
-.idea/
+venv/
+*.pyc
+.env
