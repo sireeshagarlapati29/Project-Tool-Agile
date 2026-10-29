@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: project-tool-v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: project-tool-v2
+  template:
+    metadata:
+      labels:
+        app: project-tool-v2
+    spec:
+      containers:
+        - name: project-tool-v2
+          image: sireeshagarlapati29/project-tool:v2
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: project-tool-v2-service
+spec:
+  type: ClusterIP
+  selector:
+    app: project-tool-v2
+  ports:
+    - port: 5000
+      targetPort: 5000
+      protocol: TCP
