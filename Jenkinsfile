@@ -1,34 +1,47 @@
 pipeline {
-    agent any
+agent any
 
-    stages {
-        stage('Checkout') {
-            steps {
-                echo 'Checking out Project Tool V1'
-                checkout scm
-            }
-        }
+```
+environment {
+    PYTHON = 'C:\\Users\\siree\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe'
+}
 
-        stage('Install Dependencies') {
-            steps {
-                bat 'python -m pip install -r requirements.txt'
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
-                bat 'python -m pytest -v'
-            }
+stages {
+    stage('Checkout') {
+        steps {
+            echo 'Checking out Project Tool V1'
+            checkout scm
         }
     }
 
-    post {
-        success {
-            echo 'V1 pipeline completed successfully!'
-        }
-
-        failure {
-            echo 'V1 pipeline failed. Check the console output.'
+    stage('Check Python') {
+        steps {
+            bat '"%PYTHON%" --version'
         }
     }
+
+    stage('Install Dependencies') {
+        steps {
+            bat '"%PYTHON%" -m pip install -r requirements.txt'
+        }
+    }
+
+    stage('Run Tests') {
+        steps {
+            bat '"%PYTHON%" -m pytest -v'
+        }
+    }
+}
+
+post {
+    success {
+        echo 'V1 pipeline completed successfully!'
+    }
+
+    failure {
+        echo 'V1 pipeline failed. Check the console output.'
+    }
+}
+```
+
 }
