@@ -1,37 +1,34 @@
 pipeline {
-agent any
+    agent any
 
-```
-stages {
-    stage('Checkout') {
-        steps {
-            echo 'Checking out Project Tool V1'
-            checkout scm
+    stages {
+        stage('Checkout') {
+            steps {
+                echo 'Checking out Project Tool V1'
+                checkout scm
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                bat 'python -m pip install -r requirements.txt'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                bat 'python -m pytest -v'
+            }
         }
     }
 
-    stage('Install Dependencies') {
-        steps {
-            bat 'python -m pip install -r requirements.txt'
+    post {
+        success {
+            echo 'V1 pipeline completed successfully!'
+        }
+
+        failure {
+            echo 'V1 pipeline failed. Check the console output.'
         }
     }
-
-    stage('Run Tests') {
-        steps {
-            bat 'python -m pytest -v'
-        }
-    }
-}
-
-post {
-    success {
-        echo 'V1 pipeline completed successfully!'
-    }
-
-    failure {
-        echo 'V1 pipeline failed. Check the console output.'
-    }
-}
-```
-
 }
