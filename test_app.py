@@ -6,10 +6,11 @@ def setup_function():
     app.config["SECRET_KEY"] = "test-secret"
 
 
+# V1: Add Project Tests
+
 def test_main_page_loads():
     with app.test_client() as client:
         response = client.get("/")
-
         assert response.status_code == 200
         assert b"Project Tool Agile" in response.data
         assert b"Create a New Project" in response.data
@@ -101,3 +102,77 @@ def test_create_multiple_projects():
 
         assert b"Project One" in response.data
         assert b"Project Two" in response.data
+
+
+# V2: Add Task / Assign Task Tests
+
+def test_assign_task_success():
+    with app.test_client() as client:
+        # Create a project first
+        client.post(
+            "/create-project",
+            data={
+                "name": "Agile Project",
+                "description": "College assignment",
+                "owner": "Sireesha"
+            }
+        )
+
+        # Assign a task to that project
+        response = client.post(
+            "/assign-task",
+            data={
+                "title": "Design Login Page",
+                "description": "Create the login page",
+                "assigned_to": "Sireesha",
+                "project_id": "1"
+            },
+            follow_redirects=True
+        )
+
+        assert response.status_code == 200
+        assert b"Design Login Page" in response.data
+        assert b"Sireesha" in response.data
+        assert b"Agile Project" in response.data
+        assert b"assigned successfully" in response.data
+
+
+def test_assign_task_missing_title():
+    with app.test_client() as client:
+        client.post(
+            "/create-project",
+            data={
+                "name": "Agile Project",
+                "description": "College assignment",
+                "owner": "Sireesha"
+            }
+        )
+
+        response = client.post(
+            "/assign-task",
+            data={
+                "title": "",
+                "description": "Create the login page",
+                "assigned_to": "Sireesha",
+                "project_id": "1"
+            },
+            follow_redirects=True
+        )
+
+        assert b"Please fill in all task fields." in response.data
+
+
+def test_assign_task_without_project():
+    with app.test_client() as client:
+        response = client.post(
+            "/assign-task",
+            data={
+                "title": "Design Login Page",
+                "description": "Create the login page",
+                "assigned_to": "Sireesha",
+                "project_id": "999"
+            },
+            follow_redirects=True
+        )
+
+        assert b"Please select a valid project." in response.data

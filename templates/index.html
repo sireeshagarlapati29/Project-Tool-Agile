@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Project Tool Agile - V1</title>
+    <title>Project Tool Agile - V2</title>
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -16,21 +16,22 @@
 
         <header>
             <h1>Project Tool Agile</h1>
-            <p>Version 1 — Add Project</p>
+            <p>Version 2 — Add Project & Assign Task</p>
         </header>
 
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="message {{ category }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <!-- V1: Create Project -->
         <section class="form-card">
             <h2>Create a New Project</h2>
-
-            {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-            {% for category, message in messages %}
-            <div class="message {{ category }}">
-                {{ message }}
-            </div>
-            {% endfor %}
-            {% endif %}
-            {% endwith %}
 
             <form action="{{ url_for('create_project') }}" method="POST">
 
@@ -49,6 +50,7 @@
             </form>
         </section>
 
+        <!-- V1: Display Created Projects -->
         <section class="projects-section">
             <h2>Created Projects</h2>
 
@@ -86,8 +88,94 @@
             {% endif %}
         </section>
 
+        <!-- V2: Assign Task -->
+        <section class="form-card">
+            <h2>Add Task / Assign Task</h2>
+
+            {% if projects %}
+
+            <form action="{{ url_for('assign_task') }}" method="POST">
+
+                <label for="title">Task Title</label>
+                <input type="text" id="title" name="title" placeholder="Enter task title" required>
+
+                <label for="task-description">Task Description</label>
+                <textarea id="task-description" name="description" placeholder="Describe the task" rows="4"
+                    required></textarea>
+
+                <label for="assigned_to">Assign To</label>
+                <input type="text" id="assigned_to" name="assigned_to" placeholder="Enter the person's name" required>
+
+                <label for="project_id">Select Project</label>
+                <select id="project_id" name="project_id" required>
+                    <option value="">-- Select a project --</option>
+
+                    {% for project in projects %}
+                    <option value="{{ project.id }}">
+                        {{ project.name }}
+                    </option>
+                    {% endfor %}
+
+                </select>
+
+                <button type="submit">Assign Task</button>
+
+            </form>
+
+            {% else %}
+
+            <p class="empty-message">
+                Create a project first before assigning a task.
+            </p>
+
+            {% endif %}
+        </section>
+
+        <!-- V2: Display Assigned Tasks -->
+        <section class="projects-section">
+            <h2>Assigned Tasks</h2>
+
+            {% if tasks %}
+
+            {% for task in tasks %}
+
+            <div class="project-card">
+                <h3>{{ task.title }}</h3>
+
+                <p>
+                    <strong>Task ID:</strong>
+                    {{ task.id }}
+                </p>
+
+                <p>
+                    <strong>Description:</strong>
+                    {{ task.description }}
+                </p>
+
+                <p>
+                    <strong>Assigned To:</strong>
+                    {{ task.assigned_to }}
+                </p>
+
+                <p>
+                    <strong>Project:</strong>
+                    {{ task.project_name }}
+                </p>
+            </div>
+
+            {% endfor %}
+
+            {% else %}
+
+            <p class="empty-message">
+                No tasks assigned yet.
+            </p>
+
+            {% endif %}
+        </section>
+
         <footer>
-            <p>Project Tool Agile | V1</p>
+            <p>Project Tool Agile | V2</p>
         </footer>
 
     </div>
